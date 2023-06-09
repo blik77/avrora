@@ -1,0 +1,29 @@
+<!-- templates/base.html -->
+{% load static %}
+
+<html>
+{% if user.is_authenticated %}
+<head>
+    <title>Test Telemetr</title>
+
+    <link href="{% static 'css/theme-classic-all.css' %}" rel="stylesheet">
+    <link href="{% static 'css/fontawesome-free/css/all.min.css' %}" rel="stylesheet">
+
+    <script src="{% static 'js/ext-all.js' %}"></script>
+    <script src="{% static 'js/locale-ru.js' %}"></script>
+
+    <script src="http://api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+</head>
+<body></body>
+{% else %}
+<head>
+    <meta http-equiv="refresh" content="0;URL={% url 'login' %}" />
+</head>
+<body>
+    <span style="font-size: 16px;">Необходимо авторизоваться!</span>
+    <br>
+    <a href="{% url 'login' %}">Log In</a>
+</body>
+{% endif %}
+</html>

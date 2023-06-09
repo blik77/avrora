@@ -1,0 +1,68 @@
+<!-- templates/registration/login.html -->
+{% load static %}
+
+<html>
+<head>
+    <title>Login Page</title>
+
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/login.css' %}" rel="stylesheet">
+
+    <script src="{% static 'js/ext-all.js' %}"></script>
+    <script>
+function SetDeviceData(){
+    let ar = [{"lat": 58.522857, "lon": 31.269816},{"lat": 59.938955, "lon": 30.315644},
+        {"lat": 68.970663, "lon": 33.074918}, {"lat": 57.819274, "lon": 28.33246},
+        {"lat": 56.859625, "lon": 35.91186}, {"lat": 55.75322, "lon": 37.622513}];
+    let data = [];
+    ar.forEach(function(el, i, ar){
+        data.push({
+            id: i + 1 ,
+            key: 'key_' + (i + 1),
+            status: 111,
+            ac_power: true,
+            led_ok: true,
+            temperature: 65,
+            angle_x: 12,
+            angle_y: 38,
+            latitude: el.lat,
+            longitude: el.lon,
+            battery: 29,
+            uptime: 150
+        });
+    });
+    sendData(data, 0);
+}
+function sendData(data, i){
+    if(data.length - 1 < i){ return false; }
+    Ext.Ajax.request({
+        url: 'http://127.0.0.1:8000/SetDeviceData',
+        method: 'GET',
+        params: { data: JSON.stringify(data[i]) },
+        success: function(response){ sendData(data, i + 1); },
+        failure: function(response){ Ext.Msg.alert('Ошибка', 'Передача данных не состоялась, попробуйте ещё раз'); }
+    });
+}
+    </script>
+</head>
+<body>
+    <main class="form-signin">
+        <form method="post">
+            <h1 class="h3 mb-3 fw-normal" style="text-align: center;">Пожалуйста войдите</h1>
+            {% csrf_token %}
+            {{ form.non_field_errors }}
+            <div class="form-floating">
+                <input type="text" name="username" class="form-control" id="{{ form.username.id_for_label }}" placeholder="Username" required>
+                <label for="{{ form.username.id_for_label }}">Username:</label>
+                {{ form.username.errors }}
+            </div>
+            <div class="form-floating">
+                <input type="password" name="password" class="form-control" id="{{ form.password.id_for_label }}" placeholder="Password" required>
+                <label for="{{ form.password.id_for_label }}">Password:</label>
+                {{ form.password.errors }}
+            </div>
+            <button class="w-100 btn btn-lg btn-primary" type="submit">Войти</button>
+        </form>
+    </main>
+</body>
+</html>
